@@ -1,32 +1,26 @@
 import Player from '@vimeo/player';
+import { save, load } from './local-storage-service.js';
 
-const iframe = document.querySelector('#vimeo-player');
-const player = new Player(iframe);
-const LOCALSTORAGE_KEY = 'videoplayer-current-time';
+const LOCALSTORAGE_KEY_1 = 'videoplayer-current-time';
 const throttle = require('lodash.throttle');
 
-function onPlay(timeupdate) {
-  console.log(timeupdate);
-  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(timeupdate));
+const iframe = document.querySelector('#vimeo-player');
+
+const player = new Player(iframe);
+
+function onPlay({ seconds }) {
+  console.log(seconds);
+  save(LOCALSTORAGE_KEY_1, seconds);
 }
 
-try {
-  const LocalStorageJSON = localStorage.getItem(LOCALSTORAGE_KEY);
-  const parceOfLocalStorageJSON = JSON.parse(LocalStorageJSON);
-  player
-    .setCurrentTime(parceOfLocalStorageJSON.seconds)
-    .then(function (seconds) {})
-    .catch(function (error) {
-      switch (error.name) {
-        case 'RangeError':
-          break;
+function playFromSavedTime() {
+  const savedTime = load(LOCALSTORAGE_KEY_1);
 
-        default:
-          break;
-      }
-    });
-} catch {
-  console.log('Error');
+  if (savedTime) {
+    player.setCurrentTime(savedTime);
+  }
 }
+
+playFromSavedTime();
 
 player.on('play', throttle(onPlay, 1000));
