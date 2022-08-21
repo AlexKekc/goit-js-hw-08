@@ -9,7 +9,7 @@ const refs = {
   message: document.querySelector('.feedback-form textarea'),
 };
 
-refs.form.addEventListener('input', saveUserData);
+refs.form.addEventListener('input', throttle(saveUserData, 500));
 refs.form.addEventListener('submit', submitUserData);
 
 fillingFormFromLocalStorage();
