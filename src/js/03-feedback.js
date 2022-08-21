@@ -9,7 +9,7 @@ const refs = {
   message: document.querySelector('.feedback-form textarea'),
 };
 
-refs.form.addEventListener('input', saveUserData);
+refs.form.addEventListener('input', throttle(saveUserData, 500));
 refs.form.addEventListener('submit', submitUserData);
 
 fillingFormFromLocalStorage();
@@ -17,8 +17,8 @@ fillingFormFromLocalStorage();
 function saveUserData(event) {
   const userDataObject = { email: '', message: '' };
 
-  userDataObject.email = event.currentTarget.email.value;
-  userDataObject.message = event.currentTarget.message.value;
+  userDataObject.email = event.target.form.email.value;
+  userDataObject.message = event.target.form.message.value;
 
   save(LOCALSTORAGE_KEY_2, userDataObject);
 }
